@@ -1,5 +1,6 @@
 import { getUserInfo, logOut } from "./app-firebaseauth.js";
-import { sbInit } from "./app-display.js";
+import { sbInit, dashboardCheckDeviceStatus } from "./app-display.js";
+import { setupVideos } from "./app-face-recognition.js";
 
 const loadPage = (page) => {
     fetch(`./assets/pages/${page}.html`)
@@ -80,9 +81,21 @@ const loadShell = async (contentToAppend, elements) => {
             if (page === "dashboard") {
                 console.log("Page Dashboard");
                 $("#nav-dash").addClass("active");
+                $(".dash-check").click(() => {
+                    dashboardCheckDeviceStatus();
+                });
+                $(".dash-monitoring").click(() => {
+                    window.location.href = "#monitor";
+                    setTimeout(() => routePage(), 10);
+                });
+                $(".dash-log").click(() => {
+                    window.location.href = "#log";
+                    setTimeout(() => routePage(), 10);
+                });
             } else if (page === "monitor") {
                 console.log("Page Monitor");
                 $("#nav-monitor").addClass("active");
+                setupVideos();
             } else if (page === "log") {
                 console.log("Page Logging");
                 $("#nav-log").addClass("active");

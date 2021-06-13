@@ -1,5 +1,12 @@
 import { Toast } from "./app-display.js";
 
+const antaresAccessKey = "9634da50ff7abd7a:3bdb608765b907a4";
+const antaresEndpointEsp32 = "https://platform.antares.id:8443/~/antares-cse/antares-id/SmartDoorSecurity/esp32";
+const antaresEndpointCamera = "https://platform.antares.id:8443/~/antares-cse/antares-id/SmartDoorSecurity/camIP";
+const antaresEndpointReed = "https://platform.antares.id:8443/~/antares-cse/antares-id/SmartDoorSecurity/reedswitch";
+const antaresEndpointEsp32Status = "https://platform.antares.id:8443/~/antares-cse/antares-id/SmartDoorSecurity/esp32-status";
+const antaresGetLatest = "/la";
+
 const parseData = (data) => {
     try {
         data = JSON.parse(JSON.parse(data));
@@ -14,7 +21,16 @@ const parseData = (data) => {
     }
 };
 
-const getData = (destination, accesskey, condition = "") => {
+const getData = (destination, condition = "") => {
+    if (destination === 1) {
+        destination = antaresEndpointEsp32 + antaresGetLatest;
+    } else if (destination === 2) {
+        destination = antaresEndpointCamera + antaresGetLatest;
+    } else if (destination === 3) {
+        destination = antaresEndpointReed + antaresGetLatest;
+    } else if (destination === 4) {
+        destination = antaresEndpointEsp32Status + antaresGetLatest;
+    }
     return new Promise((resolve, reject) => {
         $.ajax({
             url: "https://antares-gp.herokuapp.com/get-data.php",
@@ -22,7 +38,7 @@ const getData = (destination, accesskey, condition = "") => {
             crossDomain: true,
             data: {
                 endpoint: destination,
-                accesskey: accesskey,
+                accesskey: antaresAccessKey,
             },
             success: (res) => {
                 if (condition === "") {
@@ -45,7 +61,16 @@ const getData = (destination, accesskey, condition = "") => {
     });
 };
 
-const postData = (data, destination, accesskey) => {
+const postData = (data, destination) => {
+    if (destination === 1) {
+        destination = antaresEndpointEsp32;
+    } else if (destination === 2) {
+        destination = antaresEndpointCamera;
+    } else if (destination === 3) {
+        destination = antaresEndpointReed;
+    } else if (destination === 4) {
+        destination = antaresEndpointEsp32Status;
+    }
     return new Promise((resolve, reject) => {
         $.ajax({
             url: "https://antares-gp.herokuapp.com/post-data.php",
@@ -54,7 +79,7 @@ const postData = (data, destination, accesskey) => {
             data: {
                 data: `{\r\n    \"m2m:cin\": {\r\n    \"con\": \"{\\\"lamp\\\":${data[0]},\\\"buzzer\\\":${data[1]},\\\"lock\\\":${data[2]},\\\"servo\\\":${data[3]}}\"\r\n    }\r\n}`,
                 endpoint: destination,
-                accesskey: accesskey,
+                accesskey: antaresAccessKey,
             },
             success: (res) => {
                 console.log(`[P : ${new Date().toLocaleTimeString()}] = `, parseData(res));

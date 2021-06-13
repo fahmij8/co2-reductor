@@ -1,3 +1,5 @@
+import { getData } from "./app-antares.js";
+
 const sbInit = () => {
     !(function (l) {
         "use strict";
@@ -36,4 +38,41 @@ const Toast = Swal.mixin({
     },
 });
 
-export { sbInit, Toast };
+const timeValidityChecker = (datas) => {
+    let parsedData = JSON.parse(datas);
+    let lastUpdate = parsedData["m2m:cin"]["ct"];
+    lastUpdate = lastUpdate.split("T");
+    lastUpdate = parseInt(lastUpdate[1].substring(0, 2));
+    let timeNow = new Date().getHours();
+    if (timeNow - lastUpdate <= 1) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
+const dashboardCheckDeviceStatus = async () => {
+    $(".dash-check").addClass("disabled");
+    $(".dash-check").html("Please wait ...");
+    await getData(2, "no-parsing").then((result) => {
+        let statusCam = timeValidityChecker(JSON.parse(result));
+        if (statusCam) {
+            $(".dash-cam-border").removeClass("border-left-danger");
+            $(".dash-cam-text").removeClass("text-danger");
+            $(".dash-cam-border").addClass("border-left-success");
+            $(".dash-cam-text").addClass("text-success");
+            $(".dash-cam-stat").html("Activated");
+        } else {
+            $(".dash-cam-border").removeClass("border-left-success");
+            $(".dash-cam-text").removeClass("text-success");
+            $(".dash-cam-border").addClass("border-left-danger");
+            $(".dash-cam-text").addClass("text-danger");
+            $(".dash-cam-stat").html("Deactivated");
+        }
+    });
+    $(".dash-lu").html(`Last system up checked : ${new Date().toLocaleString()}`);
+    $(".dash-check").removeClass("disabled");
+    $(".dash-check").html("Check Status");
+};
+
+export { sbInit, Toast, dashboardCheckDeviceStatus };
