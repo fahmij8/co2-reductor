@@ -1,7 +1,10 @@
 import { getData, postData } from "./app-antares.js";
 import { Toast } from "./app-display.js";
+import { updateDevice } from "./app-device.js";
+import { routePage } from "./app-route.js";
 
 const setupVideos = async () => {
+    $(".stream-content").hide();
     Toast.fire({
         icon: "info",
         title: "Preparing. Don't switch tabs!",
@@ -22,21 +25,55 @@ const setupVideos = async () => {
     let myTimer;
     let restartCount = 0;
 
-    Promise.all([faceapi.nets.faceLandmark68Net.load(modelPath), faceapi.nets.faceRecognitionNet.load(modelPath), faceapi.nets.ssdMobilenetv1.load(modelPath)]).then(() => {
-        prepLabeledImage();
-    });
+    const checkCamIP = (ip) => {
+        fetch(ip + "/status")
+            .then((res) => res.text())
+            .then((text) => {
+                Promise.all([faceapi.nets.faceLandmark68Net.load(modelPath), faceapi.nets.faceRecognitionNet.load(modelPath), faceapi.nets.ssdMobilenetv1.load(modelPath)]).then(() => {
+                    prepLabeledImage();
+                });
+            })
+            .catch((error) => {
+                Toast.fire({
+                    icon: "error",
+                    title: "IP Camera error, check your connection",
+                });
+                setTimeout(() => {
+                    window.location.href = "./#dashboard";
+                    routePage();
+                }, 1000);
+            });
+    };
+
+    checkCamIP(streamUrl);
 
     let prepLabeledImage = async () => {
         labeledFaceDescriptors = await loadLabeledImages();
         faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, distanceLimit);
         Toast.fire({
             icon: "info",
-            title: "All set!",
+            title: "All set!, click turn on stream to start",
         });
-        showVideo();
+        ShowImage.src = "./assets/images/video.png";
+        $(".stream-content").show();
+        $(".loader-container").hide();
+        $(".monitor-begin").click((event) => {
+            let state = $(".monitor-begin").data();
+            if (state.begin === 0) {
+                $(".monitor-begin").data("begin", 1);
+                showVideo();
+                $(".monitor-begin").removeClass("btn-primary").addClass("btn-danger").html(`<i class="fal fa-cctv fa-fw"></i> Pause streaming`);
+            } else {
+                clearInterval(myTimer);
+                $(".monitor-begin").data("begin", 0);
+                $(".monitor-begin").removeClass("btn-danger").addClass("btn-primary").html(`<i class="fal fa-cctv fa-fw"></i> Resume streaming`);
+            }
+        });
     };
 
     let showVideo = () => {
+        let state = $(".monitor-begin").data();
+        console.log(state);
         clearInterval(myTimer);
         myTimer = setInterval(() => {
             error_handle();
@@ -52,18 +89,31 @@ const setupVideos = async () => {
                 showVideo();
             }, 4000);
         } else {
-            console.log("error!");
+            console.error("Showing video error");
         }
     };
 
     ShowImage.onload = () => {
-        clearInterval(myTimer);
-        restartCount = 0;
-        canvas.setAttribute("width", ShowImage.width);
-        canvas.setAttribute("height", ShowImage.height);
-        context.drawImage(ShowImage, 0, 0, ShowImage.width, ShowImage.height);
-        canvas.style.width = "100%";
-        recognizeImage();
+        let state = $(".monitor-begin").data();
+        if (state.begin === 0) {
+            clearInterval(myTimer);
+        } else if (state.begin === 1) {
+            clearInterval(myTimer);
+            restartCount = 0;
+            canvas.setAttribute("width", ShowImage.width);
+            canvas.setAttribute("height", ShowImage.height);
+            context.drawImage(ShowImage, 0, 0, ShowImage.width, ShowImage.height);
+            canvas.style.width = "100%";
+            recognizeImage();
+        } else {
+            clearInterval(myTimer);
+            restartCount = 0;
+            canvas.setAttribute("width", ShowImage.width);
+            canvas.setAttribute("height", ShowImage.height);
+            context.drawImage(ShowImage, 0, 0, ShowImage.width, ShowImage.height);
+            canvas.style.width = "100%";
+            $(".monitor-begin").data("begin", 0);
+        }
     };
 
     let recognizeImage = async () => {
@@ -71,12 +121,39 @@ const setupVideos = async () => {
         const detections = await faceapi.detectAllFaces(canvas).withFaceLandmarks().withFaceDescriptors();
         const resizedDetections = faceapi.resizeResults(detections, displaySize);
         const results = resizedDetections.map((d) => faceMatcher.findBestMatch(d.descriptor));
-        results.forEach((result, i) => {
+        results.forEach(async (result, i) => {
             let box = resizedDetections[i].detection.box;
-            let drawBox = new faceapi.draw.DrawBox(box, { label: result.toString() });
-            drawBox.draw(canvas);
             if (result["_label"] === "unknown") {
-                //canvas.toDataURL
+                let drawBox = new faceapi.draw.DrawBox(box, { label: "Intruder", boxColor: "red" });
+                drawBox.draw(canvas);
+                let images = canvas.toDataURL("image/png", 0.5);
+                await getData(1).then(async (result) => {
+                    let state = [1, 1, 1, result.servo];
+                    await postData(state, 1);
+                    updateDevice();
+                    $(".fill-alerts").prepend(`
+                        <a class="dropdown-item d-flex align-items-center nav-alert">
+                            <div class="mr-3">
+                                <div class="icon-circle bg-danger">
+                                    <i class="far fa-exclamation-triangle text-white"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="small text-gray-500">${new Date().toLocaleString()}</div>
+                                <span class="font-weight-bold">Intruder detected!</span>
+                            </div>
+                        </a>
+                        `);
+                    $(".badge-counter").html($(".nav-alert").length);
+                    await firebase.database().ref(`record/${new Date().getTime()}`).set({
+                        event: "Intruder Alert!",
+                        picture: images,
+                    });
+                });
+            } else {
+                let drawBox = new faceapi.draw.DrawBox(box, { label: "Fahmi" });
+                drawBox.draw(canvas);
+                updateDevice();
             }
         });
 

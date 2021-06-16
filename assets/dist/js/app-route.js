@@ -1,6 +1,8 @@
 import { getUserInfo, logOut } from "./app-firebaseauth.js";
 import { sbInit, dashboardCheckDeviceStatus } from "./app-display.js";
 import { setupVideos } from "./app-face-recognition.js";
+import { buttonDeviceHandler } from "./app-device.js";
+import { fillLog } from "./app-log.js";
 
 const loadPage = (page) => {
     fetch(`./assets/pages/${page}.html`)
@@ -55,6 +57,10 @@ const loadShell = async (contentToAppend, elements) => {
                 $("body").attr("id", "page-top");
                 // Reinitialize Handler
                 sbInit();
+                $(".handle-all-alerts").click(() => {
+                    window.location.href = "#log";
+                    setTimeout(() => routePage(), 10);
+                });
                 // Profile Navbar
                 getUserInfo().then((data) => {
                     $("#dashboard-name").html(data.displayName);
@@ -96,9 +102,11 @@ const loadShell = async (contentToAppend, elements) => {
                 console.log("Page Monitor");
                 $("#nav-monitor").addClass("active");
                 setupVideos();
+                buttonDeviceHandler();
             } else if (page === "log") {
                 console.log("Page Logging");
                 $("#nav-log").addClass("active");
+                fillLog();
             }
         })
         .catch((error) => {

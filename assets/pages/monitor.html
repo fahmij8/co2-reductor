@@ -7,12 +7,28 @@
                 <h6 class="m-0 font-weight-bold text-primary">Camera Feed</h6>
             </div>
             <div class="card-body">
-                <canvas id="canvas"></canvas>
-                <figure>
-                    <div id="stream-container" class="d-none">
-                        <img id="stream" src="" style="display: none" crossorigin="anonymous" />
+                <div class="loader-container text-center">
+                    <div class="lds-grid">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
                     </div>
-                </figure>
+                    <p>Please wait...</p>
+                </div>
+                <div class="stream-content">
+                    <canvas id="canvas"></canvas>
+                    <figure>
+                        <div id="stream-container" class="d-none">
+                            <img id="stream" src="" style="display: none" crossorigin="anonymous" />
+                        </div>
+                    </figure>
+                </div>
             </div>
         </div>
     </div>
@@ -29,15 +45,15 @@
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
                                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-2">Alarm</div>
-                                        <a href="javascript:void(0)" class="btn btn-success btn-circle btn-sm">
+                                        <a href="javascript:void(0)" class="btn btn-success btn-circle btn-sm dev-alarm-on" title="Alarm ON">
                                             <i class="fas fa-check"></i>
                                         </a>
-                                        <a href="javascript:void(0)" class="btn btn-danger btn-circle btn-sm">
+                                        <a href="javascript:void(0)" class="btn btn-danger btn-circle btn-sm dev-alarm-off" title="Alarm OFF">
                                             <i class="fas fa-times"></i>
                                         </a>
                                     </div>
                                     <div class="col-auto">
-                                        <i class="fas fa-siren-on fa-2x text-gray-300"></i>
+                                        <i class="fas fa-siren-on fa-2x text-gray-300 dev-alarm-icon"></i>
                                     </div>
                                 </div>
                             </div>
@@ -49,15 +65,15 @@
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
                                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-2">Door Lock</div>
-                                        <a href="javascript:void(0)" class="btn btn-success btn-circle btn-sm">
+                                        <a href="javascript:void(0)" class="btn btn-success btn-circle btn-sm dev-lock-on" title="Door Lock ON">
                                             <i class="fas fa-check"></i>
                                         </a>
-                                        <a href="javascript:void(0)" class="btn btn-danger btn-circle btn-sm">
+                                        <a href="javascript:void(0)" class="btn btn-danger btn-circle btn-sm dev-lock-off" title="Door Lock OFF">
                                             <i class="fas fa-times"></i>
                                         </a>
                                     </div>
                                     <div class="col-auto">
-                                        <i class="fas fa-unlock fa-2x text-gray-300"></i>
+                                        <i class="fas fa-unlock fa-2x text-gray-300 dev-lock-icon"></i>
                                     </div>
                                 </div>
                             </div>
@@ -71,15 +87,15 @@
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
                                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-2">Door Pusher</div>
-                                        <a href="javascript:void(0)" class="btn btn-success btn-circle btn-sm">
+                                        <a href="javascript:void(0)" class="btn btn-success btn-circle btn-sm dev-servo-on" title="Door Pusher ON">
                                             <i class="fas fa-check"></i>
                                         </a>
-                                        <a href="javascript:void(0)" class="btn btn-danger btn-circle btn-sm">
+                                        <a href="javascript:void(0)" class="btn btn-danger btn-circle btn-sm dev-servo-off" title="Door Pusher OFF">
                                             <i class="fas fa-times"></i>
                                         </a>
                                     </div>
                                     <div class="col-auto">
-                                        <i class="fas fa-door-open fa-2x text-gray-300"></i>
+                                        <i class="fas fa-door-open fa-2x text-gray-300 dev-servo-icon"></i>
                                     </div>
                                 </div>
                             </div>
@@ -91,10 +107,10 @@
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
                                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-2">Door Status</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">Undefined</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800 dev-reed-status">Undefined</div>
                                     </div>
                                     <div class="col-auto">
-                                        <i class="fas fa-door-closed fa-2x text-gray-300"></i>
+                                        <i class="fas fa-door-closed fa-2x text-gray-300 dev-reed-icon"></i>
                                     </div>
                                 </div>
                             </div>
@@ -103,7 +119,7 @@
                 </div>
                 <div class="row">
                     <div class="col-12">
-                        <a href="javascript:void(0)" class="btn btn-google btn-block"><i class="fal fa-cctv fa-fw"></i> Turn off streaming</a>
+                        <a href="javascript:void(0)" class="btn btn-primary btn-block monitor-begin" data-begin="2"><i class="fal fa-cctv fa-fw"></i> Turn on streaming</a>
                     </div>
                 </div>
             </div>
