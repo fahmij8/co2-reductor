@@ -1,0 +1,52 @@
+<h1 class="h3 mb-2 text-gray-800"><i class="fad fa-fw fa-database mr-2"></i>Database</h1>
+<p class="mb-4">Complete events from your plants environment.</p>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-success">Firebase Realtime Database</h6>
+    </div>
+    <div class="card-body">
+        <div class="loader-container text-center">
+            <div class="lds-grid">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            <p>Please wait...</p>
+        </div>
+        <div class="row">
+            <div class="col-12 mb-3" id="exportDB"></div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataDB" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th class="text-center align-middle">Date</th>
+                        <th class="text-center align-middle">CO<sub>2</sub></th>
+                        <th class="text-center align-middle">Humidity</th>
+                        <th class="text-center align-middle">Temprature</th>
+                        <th class="text-center align-middle">Soil Moisture</th>
+                        <th class="text-center align-middle">Heat Index</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="text-center align-middle">Date</th>
+                        <th class="text-center align-middle">CO<sub>2</sub></th>
+                        <th class="text-center align-middle">Humidity</th>
+                        <th class="text-center align-middle">Temprature</th>
+                        <th class="text-center align-middle">Soil Moisture</th>
+                        <th class="text-center align-middle">Heat Index</th>
+                    </tr>
+                </tfoot>
+                <tbody id="fill-DB"></tbody>
+            </table>
+        </div>
+    </div>
+</div>

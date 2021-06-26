@@ -1,74 +1,157 @@
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800"><i class="fad fa-fw fa-tachometer-alt mr-2"></i>Dashboard</h1>
-    <a href="javascript:void(0)" class="d-inline-block btn btn-sm btn-primary shadow-sm mt-4 mt-sm-0 mt-md-0 mt-lg-0 mt-xl-0 dash-check">Check Status</a>
+    <a href="javascript:void(0)" data-state="0" class="d-inline-block btn btn-sm btn-success shadow-sm mt-4 mt-sm-0 mt-md-0 mt-lg-0 mt-xl-0 btn-icon-split dash-monitoring">
+        <span class="icon text-white-50">
+            <i class="fas fa-sync"></i>
+        </span>
+        <span class="text">Start Monitoring</span>
+    </a>
 </div>
 <div class="row d-block">
     <div class="col-12">
-        <p class="dash-lu">Last system up checked : None</p>
+        <p class="dash-lu">Last update : None</p>
     </div>
 </div>
-<div class="row">
+<div class="row mb-4">
     <div class="col-xl-6 col-md-6 mb-4">
-        <div class="dash-cam-border card border-left-danger shadow h-100 py-2">
+        <div class="card shadow mb-4 h-100">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-success">Sansevieria Trifasciata</h6>
+            </div>
             <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="dash-cam-text text-xs font-weight-bold text-danger text-uppercase mb-1">Camera Status</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800 dash-cam-stat">Undefined</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-cctv fa-2x text-gray-300"></i>
-                    </div>
+                <div class="text-center mt-n3">
+                    <img class="img-fluid px-sm-5 px-md-2 px-lg-2" style="max-height: 250px" src="./assets/images/sansevieria.png" alt="Plant Sansevieria Trifasciata" />
+                </div>
+                <p class="dash-plant-status text-center font-weight-bolder text-success"></p>
+                <p class="dash-water-status text-center font-weight-light"></p>
+                <div class="d-block text-center">
+                    <a href="javascript:void(0)" class="btn btn-success btn-icon-split dash-water-plant">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-hand-holding-water"></i>
+                        </span>
+                        <span class="text">Click to water your plant</span>
+                    </a>
                 </div>
             </div>
         </div>
     </div>
     <div class="col-xl-6 col-md-6 mb-4">
-        <div class="card border-left-danger shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Microcontroller Status</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800 dash-esp-stat">Undefined</div>
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Soil Moisture</div>
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col-auto">
+                                        <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800 dash-soil-percent">NaN</div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="progress progress-sm mr-2">
+                                            <div class="progress-bar bg-success dash-soil-bar" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-leaf fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-auto">
-                        <i class="fas fa-microchip fa-2x text-gray-300"></i>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Temprature</div>
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col-auto">
+                                        <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800 dash-temp-percent">NaN</div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="progress progress-sm mr-2">
+                                            <div class="progress-bar bg-success dash-temp-bar" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-temperature-low fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Humidity Rate</div>
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col-auto">
+                                        <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800 dash-humidity-percent">NaN</div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="progress progress-sm mr-2">
+                                            <div class="progress-bar bg-success dash-humidity-bar" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-humidity fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Heat Index</div>
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col-auto">
+                                        <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800 dash-heat-percent">NaN</div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="progress progress-sm mr-2">
+                                            <div class="progress-bar bg-success dash-heat-bar" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-temperature-hot fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<div class="row">
-    <div class="col-xl-6 col-md-6 mb-4">
-        <div class="card shadow">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Door Monitoring</h6>
+<div class="row mt-n4">
+    <div class="col-12">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-success">CO<sub>2</sub> Rate</h6>
             </div>
-            <div class="card-body text-center">
-                <p>Click to start monitoring, <b>only</b> when the camera status is <code>Activated</code></p>
-                <a href="javascript:void(0)" class="btn btn-primary btn-icon-split dash-monitoring">
-                    <span class="icon text-white-50">
-                        <i class="fas fa-cctv"></i>
-                    </span>
-                    <span class="text">Start Monitoring</span>
-                </a>
-            </div>
-        </div>
-    </div>
-    <div class="col-xl-6 col-md-6 mb-4">
-        <div class="card shadow">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Log Report</h6>
-            </div>
-            <div class="card-body text-center">
-                <p>Click to view detailed monitoring report</p>
-                <a href="javascript:void(0)" class="btn btn-info btn-icon-split dash-log">
-                    <span class="icon text-white-50">
-                        <i class="fas fa-database"></i>
-                    </span>
-                    <span class="text">View Report</span>
-                </a>
+            <div class="card-body">
+                <div class="chart-area">
+                    <canvas id="history"></canvas>
+                </div>
             </div>
         </div>
     </div>

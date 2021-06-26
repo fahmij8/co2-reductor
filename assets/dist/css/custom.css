@@ -62,8 +62,8 @@
     transform: translateX(1.5rem);
 }
 .sidebar-color {
-    background-color: #4e73df;
-    background-image: linear-gradient(180deg, #4e73df 10%, #b3b4b7 100%);
+    background-color: #f4d03f;
+    background-image: linear-gradient(0deg, #f4d03f 0%, #16a085 100%);
     background-size: cover;
 }
 
@@ -79,7 +79,7 @@
     width: 16px;
     height: 16px;
     border-radius: 50%;
-    background: #4e73df;
+    background: #1cc88a;
     animation: lds-grid 1.2s linear infinite;
 }
 .lds-grid div:nth-child(1) {

@@ -1,22 +1,26 @@
 import { Toast } from "./app-display.js";
 
 const antaresAccessKey = "9634da50ff7abd7a:3bdb608765b907a4";
-const antaresEndpointEsp32 = "https://platform.antares.id:8443/~/antares-cse/antares-id/SmartDoorSecurity/esp32";
-const antaresEndpointCamera = "https://platform.antares.id:8443/~/antares-cse/antares-id/SmartDoorSecurity/camIP";
-const antaresEndpointReed = "https://platform.antares.id:8443/~/antares-cse/antares-id/SmartDoorSecurity/reedswitch";
-const antaresEndpointEsp32Status = "https://platform.antares.id:8443/~/antares-cse/antares-id/SmartDoorSecurity/esp32-status";
+const antaresEndpointEsp32 = "https://platform.antares.id:8443/~/antares-cse/antares-id/CO2Reductor/sensorData";
+const antaresEndpointPump = "https://platform.antares.id:8443/~/antares-cse/antares-id/CO2Reductor/pump";
 const antaresGetLatest = "/la";
 
-const parseData = (data) => {
+const parseData = (data, condition = "") => {
     try {
-        data = JSON.parse(JSON.parse(data));
-        data = JSON.parse(data["m2m:cin"].con);
-        return data;
+        if (condition === "") {
+            data = JSON.parse(JSON.parse(data));
+            data = JSON.parse(data["m2m:cin"].con);
+            return data;
+        } else {
+            data = JSON.parse(JSON.parse(data));
+            return data;
+        }
     } catch (error) {
         Toast.fire({
             icon: "error",
             title: "Parsing data failed!",
         });
+        clearHeavyTask();
         console.error(error);
     }
 };
@@ -25,11 +29,9 @@ const getData = (destination, condition = "") => {
     if (destination === 1) {
         destination = antaresEndpointEsp32 + antaresGetLatest;
     } else if (destination === 2) {
-        destination = antaresEndpointCamera + antaresGetLatest;
-    } else if (destination === 3) {
-        destination = antaresEndpointReed + antaresGetLatest;
-    } else if (destination === 4) {
-        destination = antaresEndpointEsp32Status + antaresGetLatest;
+        destination = antaresEndpointPump + antaresGetLatest;
+    } else {
+        return false;
     }
     return new Promise((resolve, reject) => {
         $.ajax({
@@ -46,7 +48,7 @@ const getData = (destination, condition = "") => {
                     resolve(parseData(res));
                 } else {
                     console.log(`[G : ${new Date().toLocaleTimeString()}] = `, parseData(res));
-                    resolve(res);
+                    resolve(parseData(res, condition));
                 }
             },
             error: (res) => {
@@ -55,6 +57,7 @@ const getData = (destination, condition = "") => {
                     icon: "error",
                     title: "Getting data failed!",
                 });
+                clearHeavyTask();
                 reject(res);
             },
         });
@@ -65,11 +68,9 @@ const postData = (data, destination) => {
     if (destination === 1) {
         destination = antaresEndpointEsp32;
     } else if (destination === 2) {
-        destination = antaresEndpointCamera;
-    } else if (destination === 3) {
-        destination = antaresEndpointReed;
-    } else if (destination === 4) {
-        destination = antaresEndpointEsp32Status;
+        destination = antaresEndpointPump;
+    } else {
+        return false;
     }
     return new Promise((resolve, reject) => {
         $.ajax({
@@ -77,7 +78,7 @@ const postData = (data, destination) => {
             method: "POST",
             crossDomain: true,
             data: {
-                data: `{\r\n    \"m2m:cin\": {\r\n    \"con\": \"{\\\"lamp\\\":${data[0]},\\\"buzzer\\\":${data[1]},\\\"lock\\\":${data[2]},\\\"servo\\\":${data[3]}}\"\r\n    }\r\n}`,
+                data: `{\r\n    \"m2m:cin\": {\r\n    \"con\": \"{\\\"state\\\":${data}}\"\r\n    }\r\n}`,
                 endpoint: destination,
                 accesskey: antaresAccessKey,
             },
@@ -91,6 +92,7 @@ const postData = (data, destination) => {
                     icon: "error",
                     title: "Posting data failed!",
                 });
+                clearHeavyTask();
                 reject(res);
             },
         });

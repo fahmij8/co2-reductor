@@ -1,8 +1,8 @@
 import { getUserInfo, logOut } from "./app-firebaseauth.js";
-import { sbInit, dashboardCheckDeviceStatus } from "./app-display.js";
-import { setupVideos } from "./app-face-recognition.js";
-import { buttonDeviceHandler } from "./app-device.js";
-import { fillLog } from "./app-log.js";
+import { sbInit, Toast, startMonitor, stopMonitor, checkWater } from "./app-display.js";
+import { displayChart } from "./app-chart.js";
+import { fillDB } from "./app-database.js";
+import { postData } from "./app-antares.js";
 
 const loadPage = (page) => {
     fetch(`./assets/pages/${page}.html`)
@@ -58,7 +58,7 @@ const loadShell = async (contentToAppend, elements) => {
                 // Reinitialize Handler
                 sbInit();
                 $(".handle-all-alerts").click(() => {
-                    window.location.href = "#log";
+                    window.location.href = "#database";
                     setTimeout(() => routePage(), 10);
                 });
                 // Profile Navbar
@@ -78,8 +78,7 @@ const loadShell = async (contentToAppend, elements) => {
 
             // Clear navigation active state
             $("#nav-dash").removeClass("active");
-            $("#nav-monitor").removeClass("active");
-            $("#nav-log").removeClass("active");
+            $("#nav-database").removeClass("active");
 
             // Append html
             document.querySelector(elements).innerHTML = contentToAppend;
@@ -87,26 +86,41 @@ const loadShell = async (contentToAppend, elements) => {
             if (page === "dashboard") {
                 console.log("Page Dashboard");
                 $("#nav-dash").addClass("active");
-                $(".dash-check").click(() => {
-                    dashboardCheckDeviceStatus();
-                });
                 $(".dash-monitoring").click(() => {
-                    window.location.href = "#monitor";
-                    setTimeout(() => routePage(), 10);
+                    let states = $(".dash-monitoring").data("state");
+                    if (states === 0) {
+                        checkWater();
+                        startMonitor();
+                        Toast.fire({
+                            icon: "info",
+                            title: "Monitoring Started",
+                        });
+                        $(".dash-monitoring").removeClass("btn-success").addClass("btn-secondary").html(`<span class="icon text-white-50"><i class="fas fa-stop-circle"></i></span><span class="text">Stop Monitoring</span>`).data("state", 1);
+                    } else {
+                        stopMonitor();
+                        Toast.fire({
+                            icon: "info",
+                            title: "Monitoring Stopped",
+                        });
+                        $(".dash-monitoring").removeClass("btn-secondary").addClass("btn-success").html(`<span class="icon text-white-50"><i class="fas fa-sync"></i></span><span class="text">Start Monitoring</span>`).data("state", 0);
+                    }
                 });
-                $(".dash-log").click(() => {
-                    window.location.href = "#log";
-                    setTimeout(() => routePage(), 10);
+                $(".dash-water-plant").click(() => {
+                    postData(1, 2);
+                    $(".dash-water-plant").html(`<span class="icon text-white-50"><i class="fas fa-hand-holding-water"></i></span><span class="text">Watering Now ...</span>`).removeClass("btn-success").addClass("btn-warning");
+                    setTimeout(() => {
+                        postData(0, 2);
+                        let next = new Date().addHours(6);
+                        localStorage.setItem("nextWater", next.getTime());
+                        let getDate = localStorage.getItem("nextWater");
+                        let nextDate = new Date(parseInt(getDate));
+                        $(".dash-water-status").html(`Next water in ${nextDate.toLocaleString()}`);
+                        $(".dash-water-plant").html(`<span class="icon text-white-50"><i class="fas fa-hand-holding-water"></i></span><span class="text">Click to water your plant</span>`).removeClass("btn-warning").addClass("btn-success");
+                    }, 10000);
                 });
-            } else if (page === "monitor") {
-                console.log("Page Monitor");
-                $("#nav-monitor").addClass("active");
-                setupVideos();
-                buttonDeviceHandler();
-            } else if (page === "log") {
-                console.log("Page Logging");
-                $("#nav-log").addClass("active");
-                fillLog();
+                displayChart();
+            } else if (page === "database") {
+                fillDB();
             }
         })
         .catch((error) => {

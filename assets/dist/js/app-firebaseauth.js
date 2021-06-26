@@ -2,14 +2,13 @@ import { routePage } from "./app-route.js";
 
 const firebaseInit = async () => {
     let firebaseConfig = {
-        apiKey: "AIzaSyAqK13mu6i4RRWjGOzn7JQCoAAfWRVfQiQ",
-        authDomain: "door-security-antares.firebaseapp.com",
-        databaseURL: "https://door-security-antares-default-rtdb.firebaseio.com",
-        projectId: "door-security-antares",
-        storageBucket: "door-security-antares.appspot.com",
-        messagingSenderId: "108760617876",
-        appId: "1:108760617876:web:9f1d1c9dd57bb66312b581",
-        measurementId: "G-PBDVMT1X2B",
+        apiKey: "AIzaSyBGBGg9ABq5-v3CuinK7Dv3f7U7pynvvvY",
+        authDomain: "co2-reductor.firebaseapp.com",
+        projectId: "co2-reductor",
+        storageBucket: "co2-reductor.appspot.com",
+        messagingSenderId: "890373173619",
+        appId: "1:890373173619:web:05dde8763af3a834255506",
+        measurementId: "G-17Z4NMW223",
     };
     await firebase.initializeApp(firebaseConfig);
     await firebase.analytics();
